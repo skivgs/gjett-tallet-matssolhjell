@@ -13,11 +13,15 @@
 <body>
     <header><h1>Gjett et tall</h1></header>
     <main>
-        <article>
-            <label for="inpGjetting">Gjett et tall</label>
-            <input id="inpGjetting" type="number"  min="0" max="10" onchange="gjett()">
+      <article>
+        <form onsubmit="gjett(event)">
+            <input id="inpGjetting" type="number"  min="0" max="100" required>
             <p id="txtBeskjed"></p>
-        </article>
+            <p id="txtTeller"></p>
+            <p id="txtHjelp"></p>
+            <button type="button" class="button" onclick="nyGjetting()">Start på nytt</button>
+        </form>
+      </article>
     </main>
 <footer>
     Gjett et tall er lagd av <i>Mats Solhjell Johansen</i>
@@ -27,24 +31,60 @@
         // Få tak på HTML-objekter
         var inpGjetting = document.getElementById("inpGjetting");
         var txtBeskjed = document.getElementById("txtBeskjed");
+        var txtTeller = document.getElementById("txtTeller");
+        var txtHjelp = document.getElementById("txtHjelp");
 
-        var korrektTall = Math.floor((Math.random()* 20 + 1));
+        var korrektTall = Math.floor((Math.random()* 100 + 1));
+        var teller = 0;
+        var maksverdi = 100;
+        var minverdi = 1;
 
         // Lytter funksjon som kalles når noen har gjort en gjetning.
-        function gjett(){
+        function gjett(event){
+
+          event.preventDefault();
 
             // Henter ut tallet brukeren har gjettet og gjør om det til et tall
             var gjettetTall = Number(inpGjetting.value);
             var svar;
+            var hjelp;
             if (gjettetTall == korrektTall) {
               svar = "Du gjettet riktig!!";
+              inpGjetting.style.borderColor = "lightgreen";
+              txtBeskjed.style.color = "lightgreen";
             } else if (gjettetTall < korrektTall) {
               svar = "Dette ble for lavt";
+              inpGjetting.style.borderColor = "red";
+              txtBeskjed.style.color = "red";
             } else {
               svar = "Dette ble for høyt";
+              inpGjetting.style.borderColor = "red";
+              txtBeskjed.style.color = "red";
             }
             document.getElementById("txtBeskjed").innerHTML = svar;
-            /* Fortsett her for å finne ut om tallet er korrekt! */
+
+            teller++;
+
+            if (teller == 1) {
+              txtTeller.innerHTML = "Du har gjettet 1 gang";
+            } else {
+              txtTeller.innerHTML = "Du har gjettet " + teller + " ganger"
+            }
+
+            if (gjettetTall > korrektTall) {
+              maksverdi = gjettetTall - 1;
+              inpGjetting.maksverdi = gjettetTall - 1;
+            } else if (gjettetTall < korrektTall) {
+              minverdi = gjettetTall + 1;
+              inpGjetting.minverdi = gjettetTall + 1;
+            } else {
+              txtHjelp.innerHTML = "";
+            }
+
+            txtHjelp.innerHTML = "Tallet ditt er mellom " + minverdi + " og " + maksverdi;
+        }
+        function nyGjetting() {
+          location.reload();
         }
 
     </script>
